@@ -24,11 +24,8 @@ public with sharing class AccountController {
 
     @AuraEnabled(cacheable=true)
     public static AccountResult getAccounts(Integer lim, Integer off, FilterCriteria filter) {
-      System.debug('Filter: ' + filter);
-
       String sFilter = getFilterString(filter);
-      System.debug('sFilter: ' + sFilter);
-      String query = 'SELECT Id, Name, Type, Rating, Phone, Website, AnnualRevenue, Owner.Name, LastModifiedDate FROM Account ' + sFilter +' LIMIT :lim OFFSET :off';
+      String query = 'SELECT Id, Name, Type, Rating, Phone, Website, AnnualRevenue, Owner.Name, LastModifiedDate FROM Account ' + sFilter +' ORDER BY Name LIMIT :lim OFFSET :off ';
       List<Account> items =  Database.query(query);
       AccountResult result = new AccountResult();
       result.total = getTotal(sFilter);

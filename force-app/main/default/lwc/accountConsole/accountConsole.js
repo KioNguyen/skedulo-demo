@@ -1,6 +1,5 @@
 import { LightningElement, track, wire } from 'lwc';
 
-import Id from '@salesforce/schema/AIApplication.Id';
 import getAccounts from  '@salesforce/apex/AccountController.getAccounts';
 import getAllOwner from  '@salesforce/apex/AccountController.getAllOwner';
 
@@ -79,7 +78,6 @@ export default class AccountConsole extends LightningElement {
         data
     }) {
         if (data) {
-            console.log('data', data);
             const accounts = data.items.map(item => {
                 return {
                     ...item,
@@ -125,7 +123,6 @@ export default class AccountConsole extends LightningElement {
             this.ownerOptions = owners;
         } else if (error) {
             console.log('error', error);
-            this.error = error;
         }
     }
 
