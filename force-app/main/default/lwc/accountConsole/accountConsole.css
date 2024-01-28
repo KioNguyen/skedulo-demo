@@ -1,0 +1,14 @@
+.slds-gutters .slds-col:not(:first-child, :nth-child(2)) {
+    margin-top: 10px;
+}
+
+.filter {
+    margin: 0 1.5rem 1.5rem;
+    padding: 1rem 2rem;
+    border-radius: 2rem;
+}
+.filter-type div{
+    display: flex;
+    align-items: center;
+}
+

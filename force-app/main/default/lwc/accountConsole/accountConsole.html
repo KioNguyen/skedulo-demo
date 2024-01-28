@@ -1,0 +1,87 @@
+
+<template>
+    <!-- <lightning-card title="HelloWorld" icon-name="custom:custom14">
+      <div class="slds-m-around_medium">
+        <p>Hello, {greeting}!</p>
+        <lightning-input label="Name" value={greeting} onchange={changeHandler}></lightning-input>
+      </div>
+    </lightning-card> -->
+    <lightning-card  title="Account Table"  icon-name="custom:custom63" class="slds-p-around_x-small">
+        <div class="slds-box filter">
+            <div class="slds-grid slds-wrap slds-gutters">
+                <div class="slds-col slds-size_6-of-12">
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label" for="text-input-id-47">Name</label>
+                        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left">
+                          <svg class="slds-icon slds-input__icon slds-input__icon_left slds-icon-text-default" aria-hidden="true">
+                            <use xlink:href="/_slds/icons/utility-sprite/svg/symbols.svg#search"></use>
+                          </svg>
+                          <input type="text" id="text-input-id-47" placeholder="Free text search (3 character or more)" class="slds-input" onchange={handleNameChange} />
+                        </div>
+                      </div>
+                </div>
+                <div class="slds-col slds-size_6-of-12 ">
+                    <lightning-combobox
+                            name="type"
+                            label="Type"
+                            class="filter-type"
+                            placeholder="--- Select ---"
+                            options={ownerOptions}
+                            onchange={handleSelectOwner}
+                    ></lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_6-of-12 ">
+                    <lightning-combobox
+                            name="type"
+                            label="Type"
+                            class="filter-type"
+                            value=""
+                            placeholder="--- Select ---"
+                            options={typeOptions}
+                            onchange={handleSelectType}
+                    ></lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_6-of-12 ">
+                    <lightning-slider 
+                    label="Annual Revenue" 
+                    size="medium" 
+                    value={annualRevenue} 
+                    onchange={handleAnnualRevenueChange}
+                    max="1000000000"
+                    ></lightning-slider>
+                </div>
+                <div class="slds-col slds-size_12-of-12 slds-text-align_center">
+                    <lightning-button variant="brand" label="Search" onclick={handleFilter} class=""></lightning-button>
+                </div>
+              </div>
+        </div>
+
+        <div class="slds-form-element slds-grid slds-var-m-bottom_large slds-var-m-left_large">
+            <label class="slds-form-element__label slds-size_2-of-12" for="record-per-page">Record per page</label>
+            <div class="slds-form-element__control slds-size_2-of-12">
+              <div class="slds-select_container">
+                <select class="slds-select" id="record-per-page" onchange={onChangeLimit}>
+                  <option value="5">5</option>
+                  <option value="10">10</option>
+                  <option value="20">20</option>
+                  <option value="50">50</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        
+        
+        <template if:true={accList}>
+            <lightning-datatable data={accList} columns={columns} key-field="Id">
+            </lightning-datatable>
+        </template>
+        <template if:true={error}>
+            {error}
+        </template>
+        <div style="display: flex;flex-wrap: nowrap;justify-content: space-between;align-items: center; margin-top: 1rem;">
+            <lightning-button variant="brand" disabled={disabledPrevious} label="Previous" title="Primary action" onclick={previousPage} class=""></lightning-button>
+            <p>Total: {total} record(s). Page {currPage}/{totalPage}</p> 
+            <lightning-button variant="brand" disabled={disabledNext} label="Next" title="Primary action" onclick={nextPage} class="slds-m-left_x-small"></lightning-button>
+        </div>
+    </lightning-card>
+  </template>
