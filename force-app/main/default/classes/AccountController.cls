@@ -54,14 +54,6 @@ public with sharing class AccountController {
     return result;
   }
 
-
-  @AuraEnabled(cacheable=true)
-  public static Integer getTotal(String filter){
-    String query = 'SELECT COUNT() FROM Account ' + filter;
-    Integer count =  Database.countQuery(query);
-    return count;
-  }
-
   @AuraEnabled(cacheable=true)
   public static SObject getAnnualRevenueRange(){
     String query = 'SELECT MIN(annualRevenue) min, MAX(annualRevenue) max FROM Account';
