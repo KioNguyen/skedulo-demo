@@ -1,14 +1,23 @@
 import { LightningElement, track, wire } from 'lwc';
 
 import getAccounts from  '@salesforce/apex/AccountController.getAccounts';
-import getAllOwner from  '@salesforce/apex/AccountController.getAllOwner';
+import getAnnualRevenueRange from  '@salesforce/apex/AccountController.getAnnualRevenueRange';
 
 export default class AccountConsole extends LightningElement {
     greeting = 'World';
     changeHandler(event) {
         this.greeting = event.target.value;
     }
-    
+
+    get typeOptions() {
+        return [
+            { label: '--- Select ---', value: null },
+            { label: 'Customer - Direct', value: 'Customer - Direct' },
+            { label: 'Customer - Channel', value: 'Customer - Channel' },
+            { label: 'Prospect', value: 'Prospect' },
+        ];
+    }
+
     @track columns = [{
             label: 'Account name',
             fieldName: 'Name',
@@ -52,6 +61,8 @@ export default class AccountConsole extends LightningElement {
     @track selectedType = "";
     @track annualRevenue = 0;
     @track ownerId;
+    @track minAnnualRevenue = 0;
+    @track maxAnnualRevenue = 0;
 
     filter = {
         name: this.name,
@@ -60,6 +71,18 @@ export default class AccountConsole extends LightningElement {
         ownerId: this.ownerId
     };
 
+    filterCriteria = {
+        criteria: [
+            {
+                fieldPath: 'Name',
+                operator: 'LIKE',
+            }
+        ],
+    }
+
+    matchingInfo = {
+        primaryField: { fieldPath: 'Name' },
+    }
 
     //Pagination
     @track error;
@@ -67,11 +90,11 @@ export default class AccountConsole extends LightningElement {
     @track total = 0;
     @track totalPage = 0;
     @track currPage = 0;
-    @track limit = 5;
+    @track limit = 10;
     @track offset = 0;
     @track isLoading = false;
     @track disabledPrevious = true;
-    @track disabledNext = false;
+    @track disabledNext = true;
     @wire(getAccounts, {lim: '$limit', off: '$offset', filter: '$filter'})
     wiredAccounts({
         error,
@@ -84,45 +107,38 @@ export default class AccountConsole extends LightningElement {
                     OwnerName: item.Owner.Name
                 }
             });
-            accounts.unshift({
-                value: null,
-                label: '--- Select ---'
-            })
             this.accList = accounts;
+            this.error = null;
             this.total = data.total;
             this.totalPage = Math.ceil(this.total / this.limit);
-            this.currPage = this.offset + 1;
-            this.disabledPrevious = this.currPage === 1
-            this.disabledNext = this.currPage === this.totalPage
+            this.currPage = this.totalPage === 0 ? 0 : this.offset + 1;
+            this.disabledPrevious = this.currPage === 1 || this.accList.length === 0;
+            this.disabledNext = this.currPage === this.totalPage || this.accList.length === 0;
             this.isLoading = false;
         } else if (error) {
+            console.log(error);
             this.error = error;
+            this.totalPage = 0;
+            this.currPage = 0;
+            this.total = 0;
+            this.accList = null;
+            this.disabledPrevious = true;
+            this.disabledNext = true;
         }
     }
 
-
-    //Get All Owner
-    @track ownerOptions = [];
-    @wire(getAllOwner)
-    wiredOwners({
+    @wire(getAnnualRevenueRange)
+    wiredAnnualRevenueRange({
         error,
         data
     }) {
+        console.log(data);
         if (data) {
-            console.log('data', data);
-            const owners = data.map(item => {
-                return {
-                    label: item.Name,
-                    value: item.OwnerId
-                }
-            });
-            owners.push({
-                value: null,
-                label: '--- Select ---'
-            })
-            this.ownerOptions = owners;
+            this.annualRevenueRangeErr = null;
+            this.maxAnnualRevenue = data.max;
         } else if (error) {
-            console.log('error', error);
+            console.log(error);
+            this.annualRevenueRangeErr = error;
         }
     }
 
@@ -143,37 +159,25 @@ export default class AccountConsole extends LightningElement {
     }
 
 
-    get typeOptions() {
-        return [
-            { label: '--- Select ---', value: null },
-            { label: 'Customer - Direct', value: 'Customer - Direct' },
-            { label: 'Customer - Channel', value: 'Customer - Channel' },
-            { label: 'Prospect', value: 'Prospect' },
-        ];
-    }
-
-
-    handleNameChange(event){
-        console.log('handleNameChange', event.target.value);
+    onChangeName(event){
         this.name = event.target.value;
     }
 
-    handleSelectType(event){
+    onChangeType(event){
         this.type = event.target.value;
-        console.log('handleSelectType', event.target.value);
     }
 
-    handleSelectOwner(event){
-        this.ownerId = event.target.value;
-        console.log('handleSelectType', event.target.value);
+    onChangeOwner(event){
+        this.ownerId = event.detail.recordId;
     }
 
-    handleAnnualRevenueChange(event){
+    onChangeAnnualRevenue(event){
         this.annualRevenue = event.detail.value
     }
 
-    handleFilter(){
+    submitFilter(){
         this.isLoading = true;
+        this.offset = 0;
         this.filter = {
             name: this.name,
             type: this.type,
@@ -181,6 +185,4 @@ export default class AccountConsole extends LightningElement {
             ownerId: this.ownerId
         }
     }
-
-    
 }
