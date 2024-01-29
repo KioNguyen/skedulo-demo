@@ -1,6 +1,7 @@
 public class SyncExternalUserBatch implements Database.Batchable<sObject>, Database.AllowsCallouts {
     public Database.QueryLocator start(Database.BatchableContext BC) {
-        String query = 'SELECT ExternalId__c FROM Account';
+        // Query the accounts that have an ExternalId__c value
+        String query = 'SELECT ExternalId__c FROM Account WHERE ExternalId__c != null';
         return Database.getQueryLocator(query);
     }
 
