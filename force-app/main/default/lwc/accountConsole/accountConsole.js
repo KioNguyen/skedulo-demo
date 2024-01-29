@@ -80,11 +80,11 @@ export default class AccountConsole extends LightningElement {
     @track total = 0;
     @track totalPage = 0;
     @track currPage = 0;
-    @track limit = 5;
+    @track limit = 10;
     @track offset = 0;
     @track isLoading = false;
     @track disabledPrevious = true;
-    @track disabledNext = false;
+    @track disabledNext = true;
     @wire(getAccounts, {lim: '$limit', off: '$offset', filter: '$filter'})
     wiredAccounts({
         error,
@@ -97,45 +97,19 @@ export default class AccountConsole extends LightningElement {
                     OwnerName: item.Owner.Name
                 }
             });
-            accounts.unshift({
-                value: null,
-                label: '--- Select ---'
-            })
             this.accList = accounts;
             this.total = data.total;
             this.totalPage = Math.ceil(this.total / this.limit);
-            this.currPage = this.offset + 1;
-            this.disabledPrevious = this.currPage === 1
-            this.disabledNext = this.currPage === this.totalPage
+            this.currPage = this.totalPage === 0 ? 0 : this.offset + 1;
+            this.disabledPrevious = this.currPage === 1 || this.accList.length === 0;
+            this.disabledNext = this.currPage === this.totalPage || this.accList.length === 0;
             this.isLoading = false;
         } else if (error) {
+            console.log(error);
             this.error = error;
-        }
-    }
-
-
-    //Get All Owner
-    @track ownerOptions = [];
-    @wire(getAllOwner)
-    wiredOwners({
-        error,
-        data
-    }) {
-        if (data) {
-            console.log('data', data);
-            const owners = data.map(item => {
-                return {
-                    label: item.Name,
-                    value: item.OwnerId
-                }
-            });
-            owners.push({
-                value: null,
-                label: '--- Select ---'
-            })
-            this.ownerOptions = owners;
-        } else if (error) {
-            console.log('error', error);
+            this.accList = null;
+            this.disabledPrevious = true;
+            this.disabledNext = true;
         }
     }
 
@@ -166,24 +140,25 @@ export default class AccountConsole extends LightningElement {
     }
 
 
-    handleNameChange(event){
+    onChangeName(event){
         this.name = event.target.value;
     }
 
-    handleSelectType(event){
+    onChangeType(event){
         this.type = event.target.value;
     }
 
-    handleSelectOwner(event){
+    onChangeOwner(event){
         this.ownerId = event.detail.recordId;
     }
 
-    handleAnnualRevenueChange(event){
+    onChangeAnnualRevenue(event){
         this.annualRevenue = event.detail.value
     }
 
-    handleFilter(){
+    submitFilter(){
         this.isLoading = true;
+        this.offset = 0;
         this.filter = {
             name: this.name,
             type: this.type,

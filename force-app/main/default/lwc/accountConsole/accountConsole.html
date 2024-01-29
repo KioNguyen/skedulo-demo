@@ -16,20 +16,12 @@
                           <svg class="slds-icon slds-input__icon slds-input__icon_left slds-icon-text-default" aria-hidden="true">
                             <use xlink:href="/_slds/icons/utility-sprite/svg/symbols.svg#search"></use>
                           </svg>
-                          <input type="text" id="text-input-id-47" placeholder="Free text search (3 character or more)" class="slds-input" onchange={handleNameChange} />
+                          <input type="text" id="text-input-id-47" placeholder="Free text search (3 character or more)" class="slds-input" onchange={onChangeName} />
                         </div>
                       </div>
                 </div>
                 <div class="slds-col slds-size_6-of-12 ">
-                    <!-- <lightning-combobox
-                            name="type"
-                            label="Type"
-                            class="filter-type"
-                            placeholder="--- Select ---"
-                            options={ownerOptions}
-                            onchange={handleSelectOwner}
-                    ></lightning-combobox> -->
-                    <lightning-record-picker object-api-name="User" label="Owner" matching-info={matchingInfo} onchange={handleSelectOwner}>
+                    <lightning-record-picker object-api-name="User" label="Owner" matching-info={matchingInfo} onchange={onChangeOwner}>
                     </lightning-record-picker>
                 </div>
                 <div class="slds-col slds-size_6-of-12 ">
@@ -40,7 +32,7 @@
                             value=""
                             placeholder="--- Select ---"
                             options={typeOptions}
-                            onchange={handleSelectType}
+                            onchange={onChangeType}
                     ></lightning-combobox>
                 </div>
                 <div class="slds-col slds-size_6-of-12 ">
@@ -48,12 +40,12 @@
                     label="Annual Revenue" 
                     size="medium" 
                     value={annualRevenue} 
-                    onchange={handleAnnualRevenueChange}
+                    onchange={onChangeAnnualRevenue}
                     max="1000000000"
                     ></lightning-slider>
                 </div>
                 <div class="slds-col slds-size_12-of-12 slds-text-align_center">
-                    <lightning-button variant="brand" label="Search" onclick={handleFilter} class=""></lightning-button>
+                    <lightning-button variant="brand" label="Search" onclick={submitFilter} class=""></lightning-button>
                 </div>
               </div>
         </div>
@@ -63,7 +55,6 @@
             <div class="slds-form-element__control slds-size_2-of-12">
               <div class="slds-select_container">
                 <select class="slds-select" id="record-per-page" onchange={onChangeLimit}>
-                  <option value="5">5</option>
                   <option value="10">10</option>
                   <option value="20">20</option>
                   <option value="50">50</option>
@@ -78,9 +69,13 @@
             </lightning-datatable>
         </template>
         <template if:true={error}>
-            {error}
+          <div class="slds-text-align_center slds-text-color_error">
+            {error.statusText}
+            <br/>
+            {error.body.message}
+          </div>
         </template>
-        <div style="display: flex;flex-wrap: nowrap;justify-content: space-between;align-items: center; margin-top: 1rem;">
+        <div class="slds-m-horizontal_small" style="display: flex;flex-wrap: nowrap;justify-content: space-between;align-items: center; margin-top: 1rem;">
             <lightning-button variant="brand" disabled={disabledPrevious} label="Previous" title="Primary action" onclick={previousPage} class=""></lightning-button>
             <p>Total: {total} record(s). Page {currPage}/{totalPage}</p> 
             <lightning-button variant="brand" disabled={disabledNext} label="Next" title="Primary action" onclick={nextPage} class="slds-m-left_x-small"></lightning-button>
