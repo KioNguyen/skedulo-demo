@@ -21,14 +21,16 @@
                       </div>
                 </div>
                 <div class="slds-col slds-size_6-of-12 ">
-                    <lightning-combobox
+                    <!-- <lightning-combobox
                             name="type"
                             label="Type"
                             class="filter-type"
                             placeholder="--- Select ---"
                             options={ownerOptions}
                             onchange={handleSelectOwner}
-                    ></lightning-combobox>
+                    ></lightning-combobox> -->
+                    <lightning-record-picker object-api-name="User" label="Owner" matching-info={matchingInfo} onchange={handleSelectOwner}>
+                    </lightning-record-picker>
                 </div>
                 <div class="slds-col slds-size_6-of-12 ">
                     <lightning-combobox

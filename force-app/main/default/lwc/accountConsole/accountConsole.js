@@ -60,6 +60,19 @@ export default class AccountConsole extends LightningElement {
         ownerId: this.ownerId
     };
 
+    filterCriteria = {
+        criteria: [
+            {
+                fieldPath: 'Name',
+                operator: 'LIKE',
+            }
+        ],
+    }
+
+    matchingInfo = {
+        primaryField: { fieldPath: 'Name' },
+    }
+
 
     //Pagination
     @track error;
@@ -154,18 +167,15 @@ export default class AccountConsole extends LightningElement {
 
 
     handleNameChange(event){
-        console.log('handleNameChange', event.target.value);
         this.name = event.target.value;
     }
 
     handleSelectType(event){
         this.type = event.target.value;
-        console.log('handleSelectType', event.target.value);
     }
 
     handleSelectOwner(event){
-        this.ownerId = event.target.value;
-        console.log('handleSelectType', event.target.value);
+        this.ownerId = event.detail.recordId;
     }
 
     handleAnnualRevenueChange(event){
