@@ -41,8 +41,12 @@
                     size="medium" 
                     value={annualRevenue} 
                     onchange={onChangeAnnualRevenue}
-                    max="1000000000"
+                    min="0"
+                    max={maxAnnualRevenue}
                     ></lightning-slider>
+                    <template if:true={annualRevenueRangeErr}>
+                        <div class="slds-text-color_error">Error when load Annual Revenue Range: {annualRevenueRangeErr.body.message}</div>
+                    </template>
                 </div>
                 <div class="slds-col slds-size_12-of-12 slds-text-align_center">
                     <lightning-button variant="brand" label="Search" onclick={submitFilter} class=""></lightning-button>
