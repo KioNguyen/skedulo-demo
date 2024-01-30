@@ -11,21 +11,25 @@ export default class AccountConsole extends LightningElement {
 
   @track columns = [
     {
-      label: "No",
-      fieldName: "0",
-      type: "rowNumber",
-      initialWidth: 16
-    },
-    {
       label: "Account name",
-      fieldName: "Name",
-      type: "text",
+      fieldName: "Id",
+      type: "objectUrl",
+      typeAttributes: {
+        label: { fieldName: "Name" },
+        objectType: "Account",
+        action: "view"
+      },
       hideDefaultActions: true
     },
     {
       label: "Owner",
-      fieldName: "OwnerName",
-      type: "text",
+      fieldName: "OwnerId",
+      type: "objectUrl",
+      typeAttributes: {
+        label: { fieldName: "OwnerName" },
+        objectType: "User",
+        action: "view"
+      },
       hideDefaultActions: true
     },
     {
