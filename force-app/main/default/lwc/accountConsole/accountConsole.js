@@ -19,7 +19,8 @@ export default class AccountConsole extends LightningElement {
         objectType: "Account",
         action: "view"
       },
-      hideDefaultActions: true
+      hideDefaultActions: true,
+      cellAttributes: { alignment: "center" }
     },
     {
       label: "Owner",
@@ -30,26 +31,29 @@ export default class AccountConsole extends LightningElement {
         objectType: "User",
         action: "view"
       },
-      hideDefaultActions: true
+      hideDefaultActions: true,
+      cellAttributes: { alignment: "center" }
     },
     {
       label: "Phone",
       fieldName: "Phone",
       type: "phone",
-      hideDefaultActions: true
+      hideDefaultActions: true,
+      cellAttributes: { alignment: "center" }
     },
     {
       label: "Annual Revenue",
       fieldName: "AnnualRevenue",
-      type: "currency",
-      typeAttributes: { currencyCode: "USD", currencyDisplayAs: "symbol" },
-      hideDefaultActions: true
+      type: "text",
+      hideDefaultActions: true,
+      cellAttributes: { alignment: "center" }
     },
     {
       label: "Last Modified Date",
       fieldName: "LastModifiedDate",
       type: "relativeTime",
-      hideDefaultActions: true
+      hideDefaultActions: true,
+      cellAttributes: { alignment: "center" }
     }
   ];
 
@@ -100,7 +104,8 @@ export default class AccountConsole extends LightningElement {
         return {
           ...item,
           OwnerName: item.Owner.Name,
-          LastModifiedDate: new Date(item.LastModifiedDate)
+          LastModifiedDate: new Date(item.LastModifiedDate),
+          AnnualRevenue: item.AnnualRevenue && `$${item.AnnualRevenue}`
         };
       });
       this.accList = accounts;
